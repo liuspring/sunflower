@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--自动扫描web包，将带有注解的类，纳入spring容器管理-->
+    <context:component-scan base-package="com.fctx">
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+
+    </context:component-scan>
+
+    <bean id="utf8Charset" class="java.nio.charset.Charset" factory-method="forName">
+        <constructor-arg value="UTF-8"/>
+    </bean>
+
+    <!--引入jdbc配置文件-->
+    <context:property-placeholder location="classpath:profile/local.properties"/>
+
+    <!--dataSource配置-->
+    <!--创建jdbc数据源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <!-- 基本属性 url、user、password -->
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <!-- 配置初始化最大 -->
+        <property name="maxActive" value="${jdbc.pool.maxActive}" />
+        <property name="maxIdle" value="${jdbc.pool.maxIdle}" />
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="${jdbc.pool.maxWait}" />
+        <property name="testOnBorrow" value="${jdbc.pool.testOnBorrow}" />
+        <property name="removeAbandoned" value="${jdbc.pool.removeAbandoned}" />
+        <property name="removeAbandonedTimeout" value="${jdbc.pool.removeAbandonedTimeout}" />
+    </bean>
+
+    <!-- 创建SqlSessionFactory，同时指定数据源 -->
+    <!-- mybatis文件配置，扫描所有mapper文件 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 自动扫描xml配置 -->
+        <property name="mapperLocations" value="classpath:mapping/*.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+        <!--  配置文件引用的别名与类名相同-->
+        <property name="typeAliasesPackage" value="com.fctx.model"/>
+    </bean>
+
+    <!-- Mapper接口所在包名，Spring会自动查找其下的Mapper -->
+    <!-- spring与mybatis整合配置，扫描所有dao -->
+    <bean  class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.fctx.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+    <!-- 对dataSource 数据源进行事务管理-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 启用对事务注解的支持 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--aop控制事务-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--读取数据方法，一般采用只读事务-->
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="select*" read-only="true"/>
+            <!--对数据库进行操作的方法，当产生Exception时进行回滚-->
+            <tx:method name="insert*"/>
+            <tx:method name="update*"/>
+            <tx:method name="del*"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--
+    第一个*代表所有的返回值类型
+    第二个*代表所有的类
+    第三个*代表类所有的方法
+    最后一个..代表所有的参数
+    -->
+    <aop:config>
+        <aop:pointcut id="pc" expression="execution(* com.fctx.service.impl.*.*(..))"/>
+        <aop:advisor pointcut-ref="pc"  advice-ref="txAdvice"/>
+    </aop:config>
+</beans>

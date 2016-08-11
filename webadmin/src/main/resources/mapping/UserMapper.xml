@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.fctx.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="user">
+        <result property="id" column="id" />
+        <result property="loginname" column="loginname" />
+        <result property="password" column="password" />
+    </resultMap>
+    <sql id="Base_Column_List">id,loginname,password</sql>
+
+    <select id="getEntityById" resultMap="BaseResultMap"
+            parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from t_s_user where id=#{id}
+    </select>
+
+    <select id="getMaxId" resultType="java.lang.Integer">
+        select max(id) from t_s_user
+    </select>
+
+    <select id="checkExist" resultType="java.lang.Integer"
+            parameterType="java.util.Map">
+        select COUNT(id) from t_s_user where state!=-1
+        <if test="checktype=='insert'">and loginname=#{loginname}</if>
+        <if test="checktype=='update'">
+            and id!=#{id} and loginname=#{loginname}
+        </if>
+    </select>
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_s_user
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap"
+            parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List" />
+        from t_s_user
+        <where>
+            state!=-1
+            <if test="loginname != null and  loginname != ''">
+                <![CDATA[
+	            	and loginname like '%${loginname}%'
+	            ]]>
+            </if>
+        </where>
+        <if test="orderby != null and  orderby != ''">
+            order by ${orderby}
+        </if>
+        <if test="start != null and  rows != null">
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Integer"
+            parameterType="java.util.Map">
+        select count(id) from t_s_user
+        <where>
+            state!=-1
+            <if test="loginname != null and  loginname != ''">
+                <![CDATA[
+	            	and loginname like '%${loginname}%'
+	            ]]>
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="user">
+        INSERT INTO t_s_user (loginname,password) VALUE
+        (#{loginname},#{password})
+    </insert>
+
+    <update id="update" parameterType="user">
+        UPDATE t_s_user
+        <set>
+            loginname = #{loginname},
+            <if test="password != null and  password != ''">
+                password = #{password},
+            </if>
+        </set>
+        WHERE ID = #{id}
+    </update>
+
+    <delete id="delById" parameterType="java.lang.Integer">
+        delete from t_s_user WHERE ID = #{id}
+    </delete>
+</mapper>
