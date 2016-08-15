@@ -111,12 +111,12 @@
                     "vcode":vcode
                 },
                 success:function(data){
-                    if (json.state) {
+                    if (data.code==0) {
                         $("#btn_login").val("跳转中...");
                         window.location = json.data;
                     }
                     else {
-                        setInfo(json.msg);
+                        setInfo(data.error);
                         changeVcode();
                     }
                 },
