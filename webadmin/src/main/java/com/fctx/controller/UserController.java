@@ -24,11 +24,6 @@ public class UserController extends BaseController {
     @Autowired
     private IUserService userService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String showForm(HttpServletRequest request) {
-        return "demo/user_list";
-    }
-
     @RequestMapping(value = "/getAllList.do", method = {RequestMethod.GET, RequestMethod.POST})
     public String getAllList(HttpServletRequest req, HttpServletResponse res,
                              User model,ModelMap map) {
