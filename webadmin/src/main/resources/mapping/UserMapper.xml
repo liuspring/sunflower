@@ -24,7 +24,7 @@
 
     <select id="checkExist" resultType="java.lang.Integer"
             parameterType="java.util.Map">
-        select COUNT(1) from t_s_user where state!=-1
+        select COUNT(1) from t_s_user where 1=1
         <if test="checktype=='insert'">and loginname=#{loginname}</if>
         <if test="checktype=='update'">
             and id!=#{id} and loginname=#{loginname}

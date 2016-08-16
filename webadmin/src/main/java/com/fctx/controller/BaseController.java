@@ -5,6 +5,7 @@ import com.fctx.constant.ErrorCode;
 import com.fctx.mapper.BaseMapper;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -254,7 +255,6 @@ public abstract class BaseController {
         if (jsonString == null || jsonString.trim().isEmpty()) {
             return ret;
         }
-
         JSONObject jsonObject = JSONObject.fromObject(jsonString);
 
         Iterator<?> it = jsonObject.keySet().iterator();
@@ -263,5 +263,45 @@ public abstract class BaseController {
             ret.put(key, jsonObject.get(key));
         }
         return ret;
+    }
+    /**
+     * 将url参数转换成map
+     * @param param aa=11&bb=22&cc=33
+     * @return
+     */
+    public static Map<String, Object> getUrlParams(String param) {
+        Map<String, Object> map = new HashMap<String, Object>(0);
+        if (StringUtils.isBlank(param)) {
+            return map;
+        }
+        String[] params = param.split("&");
+        for (int i = 0; i < params.length; i++) {
+            String[] p = params[i].split("=");
+            if (p.length == 2) {
+                map.put(p[0], p[1]);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 将map转换成url
+     * @param map
+     * @return
+     */
+    public static String getUrlParamsByMap(Map<String, Object> map) {
+        if (map == null) {
+            return "";
+        }
+        StringBuffer sb = new StringBuffer();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            sb.append(entry.getKey() + "=" + entry.getValue());
+            sb.append("&");
+        }
+        String s = sb.toString();
+        if (s.endsWith("&")) {
+            s = org.apache.commons.lang.StringUtils.substringBeforeLast(s, "&");
+        }
+        return s;
     }
 }

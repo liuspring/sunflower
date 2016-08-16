@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+    <!-- 指明满足“/*”的页面，将被“/layouts/default.jsp”所装饰 -->
+    <mapping path="/*" decorator="/layouts/default.jsp"/>
+
+    <!-- 指明满足“/exclude.jsp*”的页面，将被排除，不被装饰 -->
+    <!--<mapping path="/exclude.jsp*" exclue="true" />-->
+    <!-- 登录页排除 -->
+    <mapping path="/account/login.do" exclue="true" />
+
+    <!-- 找回密码页排除 -->
+    <!--<mapping path="/account/resetPwd" exclue="true" />-->
+    <!-- 404和服务器异常页面排除 -->
+    <!--<mapping path="/404.jsp" exclue="true" />-->
+    <!--<mapping path="/error.jsp" exclue="true" />-->
+    <!-- 对外提供接口除外 -->
+    <!--<mapping path="/api/*/*" exclue="true" />-->
+</sitemesh>

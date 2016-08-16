@@ -39,12 +39,19 @@ public class AccountController extends BaseController {
     public String loginSubmit(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws Exception {
         String jsonString = this.parseRequest(request);
-        Map<String, Object> params = this.parseMap(jsonString);
+        Map<String, Object> params = this.getUrlParams(jsonString);
         params.put("checktype","select");
         String vcode=((String)params.get("vcode")).trim();
         String code=session.getAttribute("code").toString();
         if (vcode.equalsIgnoreCase(code)) {  //忽略验证码大小写
-            int count= userService.checkExist(params);
+            int count=0;
+            try{
+                count= userService.checkExist(params);
+            }
+            catch (Exception ex)
+            {
+                return this.doFailedResponse(ErrorCode.FAILED,ex.toString());
+            }
             if(count==1){
                 return this.doSuccessResponse();
             }

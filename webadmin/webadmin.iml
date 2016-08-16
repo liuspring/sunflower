@@ -36,6 +36,7 @@
     <orderEntry type="module" module-name="service" />
     <orderEntry type="module" module-name="serviceImpl" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
+    <orderEntry type="library" name="Maven: org.sitemesh:sitemesh:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:3.2.11.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-beans:3.2.11.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:3.2.11.RELEASE" level="project" />
