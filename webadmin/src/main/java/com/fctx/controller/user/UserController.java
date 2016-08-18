@@ -1,5 +1,5 @@
-package com.fctx.controller;
-
+package com.fctx.controller.user;
+import com.fctx.controller.BaseController;
 import com.fctx.model.User;
 import com.fctx.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 /**
  * Created by liuJian on 2016/8/11.
  */
@@ -24,13 +24,25 @@ public class UserController extends BaseController {
     @Autowired
     private IUserService userService;
 
+    @RequestMapping(value = "index.do",method = RequestMethod.GET)
+    public String index(HttpServletRequest request,HttpServletResponse response){
+        return "/WEB-INF/views/user/user_list";
+    }
+
+    @RequestMapping(value = "getList.do",method ={RequestMethod.GET,RequestMethod.POST} )
+    public String getList(HttpServletRequest request,HttpServletResponse response){
+        List<Object> list=userService.getAll();
+        String json=this.doSuccessResponse(list);
+        return json;
+    }
+
     @RequestMapping(value = "/getAllList.do", method = {RequestMethod.GET, RequestMethod.POST})
-    public String getAllList(HttpServletRequest req, HttpServletResponse res,
-                             User model,ModelMap map) {
+    public String getAllList(ModelMap map) {
         Integer a=userService.getMaxId();
         map.addAttribute("list", userService.getAll());
-        return "demo/user_list";
+        return "/demo/user_list";
     }
+
     @RequestMapping(value = {"/getList_{pageCount}_{currentPage}_{pageSize}.do"}, method = {
             RequestMethod.GET, RequestMethod.POST})
     public void getList(HttpServletRequest req, HttpServletResponse res,

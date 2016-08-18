@@ -32,7 +32,7 @@
                 <i class="icon-chevron-down"></i>
             </a>
             <ul class="submenu">
-                <li><a href="javascript:void(0)">用户列表</a></li>
+                <li><a href="user/index.do">用户列表</a></li>
                 <li><a href="javascript:void(0)">新用户</a></li>
                 <li><a href="javascript:void(0)">用户资料</a></li>
             </ul>

@@ -31,13 +31,12 @@
 <jsp:include page="includes/_sidebar.jsp" flush="true"/>
 <!-- main container -->
 <div class="content">
-
     <!-- settings changer -->
     <div class="skins-nav">
         <a href="#" class="skin first_nav selected">
             <span class="icon"></span><span class="text">默认皮肤</span>
         </a>
-        <a href="#" class="skin second_nav" data-file="css/compiled/skins/dark.css">
+        <a href="#" class="skin second_nav" data-file="asset/css/compiled/skins/dark.css">
             <span class="icon"></span><span class="text">深色皮肤</span>
         </a>
     </div>
