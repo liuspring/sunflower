@@ -1,5 +1,6 @@
 package com.fctx.controller.user;
 import com.fctx.controller.BaseController;
+import com.fctx.model.DataTableResult;
 import com.fctx.model.User;
 import com.fctx.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,13 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "getList.do",method ={RequestMethod.GET,RequestMethod.POST} )
-    public String getList(HttpServletRequest request,HttpServletResponse response){
+    @ResponseBody
+    public Object getList(HttpServletRequest request,HttpServletResponse response){
+        DataTableResult result=new DataTableResult();
         List<Object> list=userService.getAll();
-        String json=this.doSuccessResponse(list);
+        result.setData(list);
+        result.setRecordsTotal(list.size());
+        String json=this.doSuccessResponse(result);
         return json;
     }
 
